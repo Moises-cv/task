@@ -7,5 +7,7 @@ import lombok.NoArgsConstructor;
 public class Constant {
 
     public static final String NOT_BLANK = "El campo es obligatorio";
+    public static final String NOT_NULL = "El campo no puede ser nulo";
+
 
 }

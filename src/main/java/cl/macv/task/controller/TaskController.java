@@ -1,7 +1,6 @@
 package cl.macv.task.controller;
 
 import java.net.URI;
-import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,9 +51,9 @@ public class TaskController implements TaskControllerApi {
     public ResponseEntity<TaskResponse> getTaskById(Long id) {
         log.info("Iniciando controller | buscar por id");
 
-        Optional<TaskResponse> taskResponse = taskService.getTaskById(id);
-        
-        return ResponseEntity.ok(taskResponse.get());
+        TaskResponse taskResponse = taskService.getTaskById(id);
+
+        return ResponseEntity.ok(taskResponse);
     }
 
     

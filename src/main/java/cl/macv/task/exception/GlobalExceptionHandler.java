@@ -9,9 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import cl.macv.task.dto.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
@@ -87,7 +89,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(ErrorResponse.builder()
             .codigo(HttpStatus.BAD_REQUEST.value())
-            .mensaje("Error " + errors)
+            .mensaje("Error " + errors + " " + e.getMessage())
             .hora(LocalDateTime.now())
             .build());
     }
@@ -107,6 +109,26 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(ErrorResponse.builder()
             .codigo(HttpStatus.NOT_FOUND.value())
+            .mensaje("Error " + e.getMessage())
+            .hora(LocalDateTime.now())
+            .build());
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFound(NoResourceFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(ErrorResponse.builder()
+            .codigo(HttpStatus.NOT_FOUND.value())
+            .mensaje("Error " + e.getMessage())
+            .hora(LocalDateTime.now())
+            .build());
+    }
+
+    @ExceptionHandler(MissingPathVariableException.class)
+    public ResponseEntity<ErrorResponse> handleMissingPathVariable(MissingPathVariableException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse.builder()
+            .codigo(HttpStatus.BAD_REQUEST.value())
             .mensaje("Error " + e.getMessage())
             .hora(LocalDateTime.now())
             .build());

@@ -1,8 +1,9 @@
 package cl.macv.task.service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,12 +37,11 @@ public class TaskService {
         task.setCreateAt(LocalDateTime.now());
 
         Task saveTask = taskRepository.save(task);
-
         log.info("Tarea creada {}", task);
-
         return taskMapper.toResponse(saveTask);
     }
 
+    @CacheEvict(value = "tasks", key = "#id")
     @Transactional
     @Timed(value = "task.updateStatus.time", description = "Tiempo para actualizar estado")
     public TaskResponse updateStatus(Long id, StatusEnum newStatus) {
@@ -60,12 +60,14 @@ public class TaskService {
         return taskMapper.toResponse(updateTask);
     }
     
+    @Cacheable(value = "tasks", key = "#id")
     @Transactional(readOnly = true)
     @Timed(value = "task.getById.time", description = "Tiempo para obtener tarea por ID")
-    public Optional<TaskResponse> getTaskById(Long id) {
+    public TaskResponse getTaskById(Long id) {
+        // Este código SOLO se ejecuta si NO está en caché
         Task task = taskRepository.findById(id)
             .orElseThrow(() -> new TaskNotFoundException("Tarea no encontrada: " + id));
 
-        return Optional.of(taskMapper.toResponse(task));
+        return taskMapper.toResponse(task);
     }
 }

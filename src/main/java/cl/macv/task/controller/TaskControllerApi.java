@@ -38,6 +38,16 @@ public interface TaskControllerApi {
         UriComponentsBuilder uriComponents
     );
 
+    @Operation(
+        summary = "Actualizar estado de una tarea",
+        description = "Actualiza el estado de una tarea existente"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Estado de tarea actualizado"),
+        @ApiResponse(responseCode = "400", description = "Error de validaciones"),
+        @ApiResponse(responseCode = "404", description = "Tarea no encontrada"),
+        @ApiResponse(responseCode = "405", description = "Metodo no soportado")
+    })
     @PatchMapping("/{id}/status")
     public ResponseEntity<TaskResponse> updateStatusTask(
         @PathVariable
